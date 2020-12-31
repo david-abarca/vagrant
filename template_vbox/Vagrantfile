@@ -1,0 +1,66 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_EXPERIMENTAL'] = 'disks'
+
+VM_IMAGE = 'generic/centos8'
+# VM_IMAGE = 'generic/ubuntu2004'
+
+# COUNT_DYNAMIC_VM = 1
+
+Vagrant.configure('2') do |global|
+
+    # Create VMs dynamically
+    # (1..COUNT_DYNAMIC_VM).each do |i|
+    #     global.vm.define 'template-vb-#{i}.local' do |guest|
+    #         guest.vm.hostname = 'template-vb-#{i}.local'
+    #         guest.vm.network :private_network, ip: '172.20.100.1#{i}'
+    #     end
+    # end
+
+    global.vm.define 'template-vb.local' do |guest|
+        guest.vm.hostname = 'template-vb.local'
+        guest.vm.network :private_network, ip: '172.20.100.10'
+        
+        # HW: override default allocation
+        guest.vm.provider 'virtualbox' do |vb|
+            vb.name = 'template-vb.local'
+            vb.memory = 1024
+            vb.cpus = 2
+        end
+
+        # Disk: Primary disk
+        guest.vm.disk :disk, size: '40GB', primary: true
+        
+        # DNS: remove hostname 127.0.0.1 mappping on /etc/hosts
+        guest.vm.provision :shell, inline: 'sed -i "/^127.0.0.1\\t#{guest.vm.hostname}/d" /etc/hosts'
+
+        # Provisioning: conform to standard
+        guest.vm.provision 'ansible' do |ansible|
+            ansible.config_file = ENV['VAGRANT_ANSIBLE_CONFIG']
+            ansible.inventory_path = ENV['VAGRANT_ANSIBLE_INVENTORY']
+            # Allow everywhere but limit on playbook hosts section
+            ansible.limit = 'all,localhost'
+            ansible.playbook = 'main.yml'
+        end
+    end
+
+    global.vm.box = VM_IMAGE
+
+    # HW: default HW allocation
+    # global.vm.provider 'virtualbox' do |v|
+    #     v.memory = 512
+    #     v.cpus = 1
+    #     # Commodity: turn off beep-sound during startup!
+    #     v.customize ['modifyvm', :id, '--audio', 'none']
+    # end
+
+    # DNS: automanage /etc/hosts (host & guest), prefer dnsmasq on localhost
+    # if Vagrant.has_plugin?('vagrant-hostmanager')
+    #     global.hostmanager.enabled = true
+    #     global.hostmanager.manage_host = true
+    #     global.hostmanager.manage_guest = true
+    #     global.hostmanager.ignore_private_ip = false
+    #     global.hostmanager.include_offline = false
+    # end
+end
