@@ -1,0 +1,15 @@
+---
+
+- name: Initialize Base Admin Provisioning
+  hosts: template-vb.local
+  gather_facts: true
+  vars_files:
+  - '~/projects/dev_ansible/group_vars/vars.yml'
+
+  roles:
+  - role: config_linux_base
+    become: true
+    become_user: root
+  - role: config_admin_user
+    become: true
+    become_user: '{{ admin_username }}'
