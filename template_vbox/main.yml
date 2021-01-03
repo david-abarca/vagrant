@@ -4,7 +4,7 @@
   hosts: template-vb.local
   gather_facts: true
   vars_files:
-  - '~/projects/dev_ansible/group_vars/vars.yml'
+  - '~/projects/ansible/group_vars/all.yml'
 
   roles:
   - role: config_linux_base
