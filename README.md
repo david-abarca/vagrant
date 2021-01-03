@@ -1,5 +1,5 @@
 # Vagrant
-Private Vagrant for provisioning environments with Virtualbox and VMware.
+Vagrant repo for provisioning environments with Virtualbox and VMware.
 
 ## Prerequisites
 
@@ -16,5 +16,7 @@ Last but not least you need an Ansible environment, for eg. the Ansible repo I h
 ### Summary
 - Environment variables set
 - Ansible environment for provision (optional, check main.yml within vagrant env.)
+## Template Vagrants
+Fairly customizable with options to provision dynamic VMs and dynamic DNS update so there's no need to manually configure /etc/hosts. I do however strongly suggest to setup dnsmasq and get familiar with it instead.
 ## Inventory
 template-vb.local, 172.20.100.10, dnsmasq
