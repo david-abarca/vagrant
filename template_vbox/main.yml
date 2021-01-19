@@ -1,10 +1,8 @@
 ---
 
 - name: Initialize Base Admin Provisioning
-  hosts: template-vb.local
+  hosts: template-vb.localhost
   gather_facts: true
-  vars_files:
-  - '~/projects/ansible/group_vars/all.yml'
 
   roles:
   - role: config_linux_base
