@@ -3,8 +3,8 @@
 
 ENV['VAGRANT_EXPERIMENTAL'] = 'disks'
 
-VM_IMAGE = 'generic/centos8'
-# VM_IMAGE = 'generic/ubuntu2004'
+VM_IMAGE = 'generic/ubuntu2004'
+# VM_IMAGE = 'generic/centos8'
 
 # COUNT_DYNAMIC_VM = 1
 
