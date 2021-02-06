@@ -1,8 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-ENV['VAGRANT_EXPERIMENTAL'] = 'disks'
-
 VM_IMAGE = 'generic/ubuntu2004'
 # VM_IMAGE = 'generic/centos8'
 
@@ -28,9 +26,6 @@ Vagrant.configure('2') do |global|
             vb.memory = 1024
             vb.cpus = 2
         end
-
-        # Disk: Primary disk
-        guest.vm.disk :disk, size: '40GB', primary: true
         
         # DNS: remove hostname 127.0.0.1 mappping on /etc/hosts
         guest.vm.provision :shell, inline: 'sed -i "/^127.0.0.1\\t#{guest.vm.hostname}/d" /etc/hosts'
