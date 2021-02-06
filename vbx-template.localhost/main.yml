@@ -1,13 +1,13 @@
 ---
 
 - name: Initialize Base Admin Provisioning
-  hosts: template-vb.localhost
+  hosts: vbx-template.localhost
   gather_facts: true
 
   roles:
   - role: config_linux_base
     become: true
-    become_user: root
+
   - role: config_admin_user
     become: true
     become_user: '{{ admin_username }}'
