@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VM_IMAGE = 'generic/ubuntu2004'
+
+Vagrant.configure('2') do |global|
+
+    global.vm.define 'vbx-kube-lxd-cluster.localhost' do |guest|
+        guest.vm.hostname = 'vbx-kube-lxd-cluster.localhost'
+        guest.vm.network :private_network, ip: '172.20.101.10'
+        
+        # HW: override default allocation
+        guest.vm.provider 'virtualbox' do |vb|
+            vb.name = 'vbx-kube-lxd-cluster.localhost'
+            vb.memory = 4096
+            vb.cpus = 4
+        end
+        
+        # DNS: remove hostname 127.0.0.1 mappping on /etc/hosts
+        guest.vm.provision :shell, inline: 'sed -i "/^127.0.0.1\\t#{guest.vm.hostname}/d" /etc/hosts'
+
+        # Provisioning: conform to standard
+        guest.vm.provision 'ansible' do |ansible|
+            ansible.config_file = ENV['VAGRANT_ANSIBLE_CONFIG']
+            ansible.inventory_path = ENV['VAGRANT_ANSIBLE_INVENTORY']
+            # Allow everywhere but limit on playbook hosts section
+            ansible.limit = 'all,localhost'
+            ansible.playbook = 'main.yml'
+        end
+    end
+
+    global.vm.box = VM_IMAGE
+
+end
