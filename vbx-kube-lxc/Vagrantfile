@@ -1,19 +1,22 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VM_IMAGE = 'generic/ubuntu2004'
+VM_IMAGE = 'generic/centos8'
 
 Vagrant.configure('2') do |global|
 
-    global.vm.define 'vbx-kube-lxd-cluster.localhost' do |guest|
-        guest.vm.hostname = 'vbx-kube-lxd-cluster.localhost'
+    global.vm.define 'vbx-kube-lxc' do |guest|
+        guest.vm.hostname = 'vbx-kube-lxc.localhost'
         guest.vm.network :private_network, ip: '172.20.101.10'
         
         # HW: override default allocation
         guest.vm.provider 'virtualbox' do |vb|
-            vb.name = 'vbx-kube-lxd-cluster.localhost'
+            vb.name = 'vbx-kube-lxc'
             vb.memory = 4096
             vb.cpus = 4
+
+            # Allow VM to use host DNS
+            vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
         end
         
         # DNS: remove hostname 127.0.0.1 mappping on /etc/hosts
